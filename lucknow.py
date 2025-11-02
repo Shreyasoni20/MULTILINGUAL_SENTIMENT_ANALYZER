@@ -16,12 +16,16 @@ from pydub import AudioSegment
 from streamlit_mic_recorder import mic_recorder
 
 # ---------------- DATABASE CONFIG ----------------
+
+
 DB_CONFIG = {
-    "host": "127.0.0.1",
-    "user": "root",
-    "password": "200805",
-    "database": "e_consultancy"
+    "host": st.secrets["host"],
+    "user": st.secrets["user"],
+    "password": st.secrets["password"],
+    "database": st.secrets["database"],
+    "port": int(st.secrets["port"])
 }
+
 
 # ---------------- DATABASE FUNCTIONS ----------------
 def create_connection():
@@ -445,3 +449,4 @@ with tabs[2]:
 
     st.write("---")
     st.markdown("<p style='text-align:center; color:#9c6d33;'>© 2025 Sentiment Analyzer | Designed with ❤️</p>", unsafe_allow_html=True)
+
