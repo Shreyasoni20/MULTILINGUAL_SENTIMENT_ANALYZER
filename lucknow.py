@@ -340,19 +340,26 @@ with tabs[1]:
     colA, colB = st.columns([3, 1])
     comment = colA.text_area("Enter comment...", value=speech_text, key="comment_box", height=120)
 
-    if colB.button("🎙️ Speak Now"):
-        recognizer = sr.Recognizer()
-        with sr.Microphone() as source:
-            st.info("🎧 Listening...")
-            recognizer.adjust_for_ambient_noise(source, duration=2)
-            audio = recognizer.listen(source, phrase_time_limit=10)
+    # 🎙️ Browser-based speech input (works on Streamlit Cloud)
+audio = mic_recorder(start_prompt="🎙️ Start Recording", stop_prompt="⏹️ Stop Recording", key="recorder")
+
+if audio:
+    st.audio(audio["bytes"])  # optional playback
+    from io import BytesIO
+    sound_file = BytesIO(audio["bytes"])
+
+    # Convert to text using SpeechRecognition
+    recognizer = sr.Recognizer()
+    with sr.AudioFile(sound_file) as source:
+        audio_data = recognizer.record(source)
         try:
-            text_from_speech = recognizer.recognize_google(audio, language="en-IN")
+            text_from_speech = recognizer.recognize_google(audio_data, language="en-IN")
             st.session_state["speech_text"] = text_from_speech
             st.success("✅ Recognized and filled in the text box.")
             st.rerun()
         except Exception as e:
             st.error(f"⚠️ Speech recognition error: {e}")
+
 
     if st.button("Analyze Sentiment"):
         comment = st.session_state.get("speech_text", comment)
@@ -449,4 +456,5 @@ with tabs[2]:
 
     st.write("---")
     st.markdown("<p style='text-align:center; color:#9c6d33;'>© 2025 Sentiment Analyzer | Designed with ❤️</p>", unsafe_allow_html=True)
+
 
