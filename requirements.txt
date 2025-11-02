@@ -6,6 +6,5 @@ wordcloud
 textblob
 plotly
 mysql-connector-python
-SpeechRecognition
 pydub
 streamlit-mic-recorder
